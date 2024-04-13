@@ -82,15 +82,19 @@ def get_quantity(instrument, trade_direction):
         return
     #print(stop_loss_price, take_profit_price)
 
-    trade_currency_2 = instrument[4:]
+    trade_currency_2 = instrument
     position_size=None
     # A more complex calculation can be done 
 
-    if "USD" in trade_currency_2:
-        position_size = 100000
+    if "AUD" in trade_currency_2:
+        position_size = 20000
     elif "JPY" in trade_currency_2:
-        position_size = 50000
+        position_size = 20000
     elif "CHF" in trade_currency_2:
+        position_size = 20000
+    elif "EUR" in trade_currency_2:
+        position_size = 20000
+    elif "GBP" in trade_currency_2:
         position_size = 20000
     else:
         print("Unsupported currency in the denominator")
