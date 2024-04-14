@@ -114,18 +114,31 @@ def get_open_positions():
     open_positions = response.get("positions", [])
     return open_positions
 
-def calculate_total_unrealised_pnl(positions_dict):
+def calculate_total_unrealised_pnl(positions_dict,instrument_name):
+    # long_pnl = 0
+    # short_pnl = 0
+    # total_pnl = 0
+
+    # for position in positions_dict:
+    #     long_unrealized_pnl = float(position['long']['unrealizedPL'])
+    #     short_unrealized_pnl = float(position['short']['unrealizedPL'])
+
+    #     long_pnl += long_unrealized_pnl
+    #     short_pnl += short_unrealized_pnl
+    #     total_pnl = long_pnl + short_pnl
     long_pnl = 0
     short_pnl = 0
     total_pnl = 0
 
     for position in positions_dict:
-        long_unrealized_pnl = float(position['long']['unrealizedPL'])
-        short_unrealized_pnl = float(position['short']['unrealizedPL'])
+        if position['instrument'] == instrument_name:
+            long_unrealized_pnl = float(position['long']['unrealizedPL'])
+            short_unrealized_pnl = float(position['short']['unrealizedPL'])
 
-        long_pnl += long_unrealized_pnl
-        short_pnl += short_unrealized_pnl
-        total_pnl = long_pnl + short_pnl
+            long_pnl += long_unrealized_pnl
+            short_pnl += short_unrealized_pnl
+            total_pnl = long_pnl + short_pnl
+            break
 
     return long_pnl, short_pnl, total_pnl
 

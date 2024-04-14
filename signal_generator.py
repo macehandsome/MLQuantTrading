@@ -142,3 +142,43 @@ def generate_signal_2(instrument_name, lookback_count):
         signal = None
 
     return signal
+
+
+
+def fetch_data_to_show(instrument_name, lookback_count=200):
+
+    api = API(access_token=access_token, environment="practice")
+    params = {
+        'count': lookback_count,
+        'granularity': 'S5',
+        'price': 'M'
+    }
+    candles_request = InstrumentsCandles(instrument=instrument_name, params=params)
+    response = api.request(candles_request)
+    return [{
+        'x': [candle['time'] for candle in response['candles']],
+        'open': [float(candle['mid']['o']) for candle in response['candles']],
+        'high': [float(candle['mid']['h']) for candle in response['candles']],
+        'low': [float(candle['mid']['l']) for candle in response['candles']],
+        'close': [float(candle['mid']['c']) for candle in response['candles']],
+        'type': 'candlestick',
+    }]
+
+def fetch_latest_prices(instruments):
+    api = API(access_token=access_token, environment="practice")
+    params = {
+        'instruments': ','.join(instruments)
+    }
+    pricing_request = PricingInfo(accountID=account_id, params=params)
+    response = api.request(pricing_request)
+    
+    latest_prices = []
+    for price in response['prices']:
+        latest_prices.append({
+            'instrument': price['instrument'],
+            'time': price['time'],
+            'bid': float(price['bids'][0]['price']),
+            'ask': float(price['asks'][0]['price']),
+            'mid': (float(price['bids'][0]['price']) + float(price['asks'][0]['price'])) / 2
+        })
+    return latest_prices

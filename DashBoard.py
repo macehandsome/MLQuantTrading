@@ -123,7 +123,86 @@ app.layout = dbc.Container([
 
 
     # dbc.Row(dbc.Col(html.Div(id='output-state'), className="mt-4")),
-
+    html.Hr(),
+    dbc.Row(dbc.Col(html.H1("Signal Input:"), className="text-center mb-4")),
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Standard Deviation"),
+                dbc.CardBody([
+                    dcc.Markdown("""
+                    **Time Periods:**  
+                    - Weekly (5 days)  
+                    - Monthly (21 days)  
+                    - Yearly (252 days)  
+                    Standard deviation is calculated over these time periods to assess volatility.
+                    """)
+                ])
+            ]),
+        ], width=12),
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Bollinger Bands"),
+                dbc.CardBody([
+                    dcc.Markdown("""
+                    **Calculation:**  
+                    Bollinger Bands are computed using a 20-day rolling average plus and minus twice the 20-day rolling standard deviation.
+                    """)
+                ])
+            ]),
+        ], width=12),
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Heiken Ashi"),
+                dbc.CardBody([
+                    dcc.Markdown("""
+                    **Formulae:**  
+                    - High: High price of the day  
+                    - Low: Low price of the day  
+                    - Open: Average of the previous day’s open and close prices  
+                    - Close: Average of the open, close, high, and low prices of the current period  
+                    Heiken Ashi candles are used as individual features and combined to determine their importance in our model.
+                    """)
+                ])
+            ]),
+        ], width=12),
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Stochastic Oscillator"),
+                dbc.CardBody([
+                    dcc.Markdown("""
+                    **Calculation:**  
+                    Stochastic Oscillator (SO) is computed as K-D, where K and D are defined as follows:
+                    - K: Closing price minus the lowest price in the last 14 days over the difference between the highest and lowest prices in the last 14 days.
+                    - D: 3-day rolling average of K.
+                    """)
+                ])
+            ]),
+        ], width=12),
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Bull and Bear Powers"),
+                dbc.CardBody([
+                    dcc.Markdown("""
+                    **Calculation:**  
+                    - Bull Power: Difference between the high prices and the 14-day Simple Moving Average (SMA).
+                    - Bear Power: Difference between the low prices and the 14-day SMA.
+                    """)
+                ])
+            ]),
+        ], width=12),
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Relative Strength Index (RSI)"),
+                dbc.CardBody([
+                    dcc.Markdown("""
+                    **Calculation:**  
+                    RSI is computed using a 14-day window and is calculated as 100 - (100 / (1 + (average gain / average loss))).
+                    """)
+                ])
+            ]),
+        ], width=12),
+    ]),
     dcc.ConfirmDialog(id='confirm-running', message='Strategy already running.'),
     dcc.ConfirmDialog(id='confirm-closed', message='Close all positions successfully.'),
     dbc.Row([
@@ -134,10 +213,10 @@ app.layout = dbc.Container([
         dbc.Col(dcc.Dropdown(
             id='strategy-selector',
             options=[
-                {'label': 'Strategy 1', 'value': 'strategy1'},
-                {'label': 'Strategy 2', 'value': 'strategy2'}
+                {'label': 'Strategy 1', 'value': '1'},
+                {'label': 'Strategy 2', 'value': '2'}
             ],
-            value='strategy1',  
+            value='1',  
             style={'width': '100%','margin-left': 'auto', 'margin-right': 'auto',}
         ), width=3),
     ]),
@@ -235,7 +314,7 @@ def update_graph(n, instrument_name):
     fig = go.Figure(data=data)
     fig.update_layout(
         title=f'Real-Time Candlestick Chart for {instrument_name}',
-        xaxis_rangeslider_visible=False
+        xaxis_rangeslider_visible=True
     )
     return fig
 
@@ -334,10 +413,10 @@ def kill_switch(n_clicks):
     Input('strategy-selector', 'value')
 )
 def update_strategy_description(selected_strategy):
-    if selected_strategy == 'strategy1':
-        return "Description of Strategy 1: This strategy focuses on short-term trends and uses specific indicators..."
-    elif selected_strategy == 'strategy2':
-        return "Description of Strategy 2: This strategy targets long-term investments and focuses on fundamental analysis..."
+    if selected_strategy == '1':
+        return "Description of Strategy 1: Binary signal based on the predicted value. If the predicted value is positive (negative), we enter (exit) a position. This strategy places less importance on the accuracy of our predictions."
+    elif selected_strategy == '2':
+        return "Description of Strategy 2: Utilise the standard deviation of the difference between the predicted and actual values as a confidence band. We trade only if the predicted value is higher or lower than the band, indicating that the predicted value is statistically different from zero."
     else:
         return "Please select a trading strategy."
     
@@ -349,7 +428,7 @@ def update_strategy_description(selected_strategy):
 def update_current_balance(n):
     equity = get_account_equity()
     balance = get_current_balance()
-    return html.H1(f"Current equity: {equity:.2f}, Current balance: {balance:.2f}", style={'position': 'fixed', 'top': 0})
+    return html.H1(f"Current equity: {equity:.2f}, Current balance: {balance:.2f}", style={'position': 'fixed', 'top': 0 ,'color': 'green'})
     # return html.H5(f"Current equity: {equity:.2f}, Current balance: {balance:.2f}")
 
 # # define callback to update target profit and stop loss

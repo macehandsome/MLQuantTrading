@@ -30,10 +30,10 @@ def init_paramters():
 
     r.set('is_trading_running', 'False')
     r.set('lookback_count', '200')
-    r.set('stma_period', '9')
-    r.set('ltma_period', '20')
+    # r.set('stma_period', '9')
+    # r.set('ltma_period', '20')
     r.set('inposition', 'False')
-    r.set('strategy','strategy1')
+    r.set('strategy','1')
 
 
     instruments = ["EUR_USD", "USD_JPY", "GBP_USD", "USD_CHF", "AUD_USD"]
